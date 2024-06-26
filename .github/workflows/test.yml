@@ -1,0 +1,81 @@
+name: "Test"
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_DB: rails_test
+          POSTGRES_USER: rails
+          POSTGRES_PASSWORD: password
+
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Set up database schema
+        run: bin/rails db:schema:load
+
+      - name: Check Rails credentials & master key
+        run: |
+          if bundle exec rails credentials:show > /dev/null; then
+            echo "Credentials are set up correctly."
+          else
+            echo "Invalid RAILS_MASTER_KEY"
+            exit 1
+          fi
+
+      - name: Check Rails Autoloader
+        run: bin/rails zeitwerk:check
+
+      - name: Build assets
+        run: bin/rails assets:precompile
+
+      - name: Run tests
+        run: bundle exec rspec
+
+      # - name: Run e2e tests with Playwright
+      #   run: bin/e2e
+
+      # - uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #     name: playwright-report
+      #     path: playwright-report/
+      #     retention-days: 30
+
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #     - name: Install Ruby and gems
+  #       uses: ruby/setup-ruby@v1
+  #       with:
+  #         bundler-cache: true
+  #     #     - name: Security audit dependencies
+  #     #       run: bin/bundler-audit --update
+  #     #     - name: Security audit application code
+  #     #       run: bin/brakeman -q -w2
+  #     - name: Lint Ruby files
+  #       run: bin/rubocop --parallel
