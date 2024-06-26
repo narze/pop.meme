@@ -65,3 +65,7 @@ end
 
 gem "vite_rails"
 gem "avo", ">= 3.2"
+
+group :development, :test do
+  gem "rspec-rails"
+end
