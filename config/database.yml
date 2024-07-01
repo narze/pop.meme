@@ -79,6 +79,7 @@ test:
 #
 production:
   <<: *default
+  host: <%= ENV["DB_HOST"] %>
   database: pop_meme_production
   username: pop_meme
-  password: <%= ENV["POP_MEME_DATABASE_PASSWORD"] %>
+  password: <%= ENV["POSTGRES_PASSWORD"] %>
