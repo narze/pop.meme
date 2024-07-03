@@ -6,7 +6,15 @@ image: narze/popmeme
 
 # Deploy to these servers.
 servers:
-  - <%= ENV["SERVER_IP"] %>
+  web:
+    hosts:
+      - <%= ENV["SERVER_IP"] %>
+    labels:
+      traefik.http.routers.popmeme.rule: Host(`pop.meme`)
+      traefik.http.routers.popmeme_secure.entrypoints: websecure
+      traefik.http.routers.popmeme_secure.rule: Host(`pop.meme`)
+      traefik.http.routers.popmeme_secure.tls: true
+      traefik.http.routers.popmeme_secure.tls.certresolver: letsencrypt
 
 # Credentials for your image host.
 registry:
@@ -61,13 +69,22 @@ accessories:
     port: 6379
     directories:
       - data:/data
-#
-# Configure #custom arguments for Traefik. Be sure to reboot traefik when you modify it.
-# traefik:
-#   args:
-#     accesslog: true
-#     accesslog.format: json
 
+# Configure #custom arguments for Traefik. Be sure to reboot traefik when you modify it.
+traefik:
+  options:
+    publish:
+      - "443:443"
+    volume:
+      # Make sure you have chmodd 600 on /letsencrypt/acme.json
+      - "/letsencrypt/acme.json:/letsencrypt/acme.json"
+  args:
+    entryPoints.web.address: ":80"
+    entryPoints.websecure.address: ":443"
+    certificatesResolvers.letsencrypt.acme.email: "manassarn@gmail.com"
+    certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
+    certificatesResolvers.letsencrypt.acme.httpchallenge: true
+    certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: web
 # Configure a custom healthcheck (default is /up on port 3000)
 # healthcheck:
 #   path: /healthz
