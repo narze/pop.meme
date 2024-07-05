@@ -70,7 +70,7 @@ accessories:
     directories:
       - data:/data
 
-# Configure #custom arguments for Traefik. Be sure to reboot traefik when you modify it.
+# Configure #custom arguments for Traefik. Be sure to reboot traefik with `kamal traefik reboot` when you modify it.
 traefik:
   options:
     publish:

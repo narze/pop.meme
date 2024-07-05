@@ -6,6 +6,6 @@ hosts = ENV["KAMAL_HOSTS"].split(",")
 
 hosts.each do |ip|
   destination = "root@#{ip}"
-  puts "Creating /letsencrypt/acme.json on #{destination}"
+  puts "Ensure /letsencrypt/acme.json on #{destination}"
   `ssh #{destination} "mkdir -p /letsencrypt && touch /letsencrypt/acme.json && chmod 600 /letsencrypt/acme.json"`
 end
