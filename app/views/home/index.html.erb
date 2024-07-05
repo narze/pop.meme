@@ -2,14 +2,14 @@
   <h1 class="text-3xl font-bold">
     pop.meme
   </h1>
-  <div>รวมเว็บมีมคุณภาพ</div>
+  <div>รวมเว็บมีมคุณภาพ อีกแล้วครับท่าน</div>
 </header>
 
 <section id="list">
   <div class="mt-8 flex flex-col sm:flex-row gap-4">
     <% @memes.each do |meme| %>
       <%= link_to meme.url, onclick: meme.wip ? 'alert("Work in progress")' : ""  do %>
-        <div class="bg-white p-2 rounded-lg shadow-md">
+        <div class="bg-white p-2 rounded-lg shadow-md hover:shadow-xl transition duration-200">
           <img src="<%= meme.image_url %>" alt="<%= meme.title %>" class="w-full h-60 object-cover rounded-lg aspect-[16/9]">
           <!--
           <h2 class="text-lg font-bold mt-2"><%= meme.title %></h2>
@@ -20,3 +20,7 @@
     <% end %>
   </div>
 </section>
+
+<footer class="mt-20">
+  <%= link_to "☕️ สนับสนุน", "https://ko-fi.com/narze", target: "_blank", class: "ring ring-2 ring-inset rounded-lg p-4 ring-orange-300 hover:ring-4 hover:ring-500 transition duration-200" %>
+</footer>
