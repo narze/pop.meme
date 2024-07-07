@@ -5,4 +5,8 @@ class HomeController < ApplicationController
       OpenStruct.new(title: 'Bkk Sticker', url: "https://bkk-sticker.vercel.app", image_url: '/bkk-sticker.jpg', description: 'สติ๊กเกอร์รถไฟฟ้า', wip: false),
     ]
   end
+
+  def frame
+    @headless = true
+  end
 end
